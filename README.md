@@ -1,2 +1,1 @@
-# linkscribe-changelog
-A timeline of performance bottlenecks, legacy debt, and modern architectural refactors in LinkScribe.
+Where LinkScribe's technical debt goes to get fixed. Chronological breakdowns of real performance issues, bad code, and the modern refactors used to rebuild the app.
