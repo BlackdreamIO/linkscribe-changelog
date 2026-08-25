@@ -1,0 +1,9 @@
+# Optimizing the Bookmark Import Engine
+
+When users attempted to import larger bookmark files containing over two hundred links, the application hit a severe performance bottleneck. Processing these datasets caused the execution context to freeze entirely during the file parsing and decoding phase. Because the main thread was burdened with reading the payload, parsing the HTML or JSON structure, and managing state updates simultaneously, the user interface would lock up and become completely unresponsive until the operations concluded.
+
+To eliminate this friction, the initial technical strategy focused on offloading the entire payload processing routine to a dedicated Web Worker. The core idea was to handle file reading, streaming, and data decoding asynchronously on a background thread. Once processed, the worker would post the sanitized bookmark data back to the primary thread, completely insulating the main execution stack from blocking tasks and keeping the user interface completely reactive.
+
+During the exploratory phase of the refactor, an intermediate optimization yielded an even more immediate performance gain. By upgrading the core parsing architecture and adopting a significantly more efficient library within the existing workspace, the main thread gained the capacity to process massive bookmark files seamlessly. While the architecture still operates within the single thread model for now, the optimized decoding pipeline completely removed the thread exhaustion issue.
+
+Moving the import pipeline into a Web Worker remains a viable future optimization, particularly if file sizes scale up significantly. However, because the current in-memory parsing refactor successfully eliminated the application crashes and main thread bottlenecks, the asynchronous background thread approach has been temporarily deferred in favor of a simpler, high-throughput synchronous implementation.
