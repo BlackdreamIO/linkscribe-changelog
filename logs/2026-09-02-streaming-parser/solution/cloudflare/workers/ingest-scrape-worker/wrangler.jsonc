@@ -1,0 +1,50 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "ingest-scrape-worker",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-08-25",
+	"observability": {
+		"enabled": true,
+	},
+	"queues": {
+		"consumers": [
+			{
+				"queue": "ingest-scrape-queue"
+			}
+		],
+		"producers": [
+			{
+				"queue": "mono-link-screenshot-queue",
+				"binding": "MONO_LINK_SCREENSHOT_QUEUE",
+			},
+			{
+				"queue": "mono-link-vector-sync-queue",
+				"binding": "MONO_LINK_VECTOR_SYNC_QUEUE",
+			},
+			{
+				"queue": "mono-link-nsfw-filter-queue",
+				"binding": "MONO_LINK_NSFW_FILTER_QUEUE",
+			},
+			{
+				"queue": "mono-link-llm-enrichment-queue",
+				"binding": "MONO_LINK_LLM_ENRICHMENT_QUEUE",
+			},
+			{
+				"queue": "mono-link-security-queue",
+				"binding": "MONO_LINK_SECURITY_QUEUE",
+			},
+		]
+	},
+	"upload_source_maps": true,
+	"rules": [
+		{
+			"globs": [
+				"**/*.lua"
+			],
+			"type": "Text",
+			"fallthrough": true
+		}
+	],
+	"workers_dev": false,
+	"preview_urls": false
+}
