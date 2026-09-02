@@ -1,0 +1,25 @@
+import { IMonoLink } from "@/interface/MonoLink";
+import { DexieDB } from "@/lib/database/dexie-primary/Dexie";
+import { MonoLinksRepo } from "@/lib/database/dexie-primary/repos/MonoLinkRepo";
+import AppEvents, { APP_EVENTS } from "@/lib/system/eventBus/AppEventBus";
+
+const dexieInstance = new DexieDB();
+const monoLinksRepo = new MonoLinksRepo(dexieInstance);
+
+const E = APP_EVENTS.API["MONOLINKS"];
+
+export async function applyMonoLinkBulkCreateMutation(monoLinks : IMonoLink[]) {
+
+    const modifiedMonoLinks = monoLinks.map(m => ({
+        ...m,
+        syncStatus : "pending_create",
+        updatedAt : new Date().toISOString(),
+        createdAt : new Date().toISOString(),
+        isDirty : false,
+        _revision : 0,
+    }) as IMonoLink)
+
+    await monoLinksRepo.monoLinks.bulkAdd(modifiedMonoLinks);
+
+    //AppEvents.emit(E["INTERNAL_CHANGE"], { action : "CREATE", payload : [modifiedMonoLink] });
+}
